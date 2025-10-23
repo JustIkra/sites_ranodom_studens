@@ -27,9 +27,12 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'h=5q$^4_u9lt^tvsgea#y5=&c^9t-c
 # Allow overriding via environment variable DJANGO_DEBUG ("1"/"0").
 DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
 
-# Allow passing comma-separated hosts via DJANGO_ALLOWED_HOSTS (e.g. "example.com,www.example.com")
+# Allowed hosts configuration
+# In production, set DJANGO_ALLOWED_HOSTS in .env
+# For Nginx Proxy Manager, include both IP and domain
+default_allowed_hosts = ['localhost', '127.0.0.1', '172.30.4.14']
 _env_allowed_hosts = os.environ.get('DJANGO_ALLOWED_HOSTS', '')
-ALLOWED_HOSTS = [h.strip() for h in _env_allowed_hosts.split(',') if h.strip()]
+ALLOWED_HOSTS = [h.strip() for h in _env_allowed_hosts.split(',') if h.strip()] if _env_allowed_hosts else default_allowed_hosts
 
 
 # Application definition
@@ -49,6 +52,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Serve static files in production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -125,6 +129,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# WhiteNoise configuration for production
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Email configuration
 # In development, use console backend; override via env vars for real SMTP
 EMAIL_BACKEND = os.environ.get('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
@@ -147,3 +154,19 @@ CACHES = {
         'LOCATION': 'unique-snowflake',
     }
 }
+
+# Trust X-Forwarded-Proto header from Nginx Proxy Manager
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# CSRF trusted origins for Nginx Proxy Manager
+default_csrf = ['http://172.30.4.14', 'http://172.30.4.14:8000']
+_env_csrf = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
+CSRF_TRUSTED_ORIGINS = [h.strip() for h in _env_csrf.split(',') if h.strip()] if _env_csrf else default_csrf
+
+# Security settings for production
+if not DEBUG:
+    # Uncomment when using HTTPS via Nginx Proxy Manager
+    # SECURE_SSL_REDIRECT = True
+    # SESSION_COOKIE_SECURE = True
+    # CSRF_COOKIE_SECURE = True
+    pass

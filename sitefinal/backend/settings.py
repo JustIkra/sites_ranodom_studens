@@ -23,16 +23,16 @@ DJANGO_ENV = os.getenv('DJANGO_ENV', 'local').lower()
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', '1' if DJANGO_ENV == 'local' else '0') == '1'
 
-# ДОБАВИТЬ ваши домены Beget
+# Allowed hosts configuration
+# In production, MUST set DJANGO_ALLOWED_HOSTS in .env
+# For Nginx Proxy Manager, include both IP and domain
 default_allowed_hosts = [
     'localhost',
     '127.0.0.1',
-    'my-russian-potencial.ru',
-    'www.my-russian-potencial.ru',
-    "*"
+    '172.30.4.14',  # ZeroTier IP
 ]
 env_allowed_hosts = [h.strip() for h in os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',') if h.strip()]
-ALLOWED_HOSTS = env_allowed_hosts or (default_allowed_hosts if DJANGO_ENV == 'local' else [])
+ALLOWED_HOSTS = env_allowed_hosts if env_allowed_hosts else default_allowed_hosts
 
 
 # Application definition
@@ -149,17 +149,19 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# CORS configuration
+# For Nginx Proxy Manager: allow requests from proxy domains
 default_cors = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://my-russian-potencial.ru",
-    "https://www.my-russian-potencial.ru",
+    "http://172.30.4.14",
+    "http://172.30.4.14:8001",
 ]
 if DJANGO_ENV == 'local':
     CORS_ALLOW_ALL_ORIGINS = True
 else:
     env_cors = [h.strip() for h in os.getenv('DJANGO_CORS_ORIGINS', '').split(',') if h.strip()]
-    CORS_ALLOWED_ORIGINS = env_cors
+    CORS_ALLOWED_ORIGINS = env_cors if env_cors else default_cors
 
 # REST Framework settings
 REST_FRAMEWORK = {
@@ -171,17 +173,26 @@ REST_FRAMEWORK = {
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# CSRF configuration
+# For Nginx Proxy Manager with SSL: include https:// origins
+default_csrf = [
+    'http://localhost',
+    'http://127.0.0.1',
+    'http://172.30.4.14',
+    'http://172.30.4.14:8001',
+]
 env_csrf = [h.strip() for h in os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',') if h.strip()]
-CSRF_TRUSTED_ORIGINS = (env_csrf or []) + (
-    [
-        'http://localhost',
-        'http://127.0.0.1',
-        'https://my-russian-potencial.ru',
-        'https://www.my-russian-potencial.ru',
-    ] if DJANGO_ENV == 'local' else []
-)
+CSRF_TRUSTED_ORIGINS = env_csrf if env_csrf else default_csrf
 
-# ДОБАВИТЬ если используете HTTPS
+# Trust X-Forwarded-Proto header from Nginx Proxy Manager
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Security settings for production
+if DJANGO_ENV != 'local':
+    # Uncomment when using HTTPS via Nginx Proxy Manager
+    # SECURE_SSL_REDIRECT = True
+    # SESSION_COOKIE_SECURE = True
+    # CSRF_COOKIE_SECURE = True
+    pass
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
