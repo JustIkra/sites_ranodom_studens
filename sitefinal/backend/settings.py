@@ -83,19 +83,13 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-if DJANGO_ENV == 'local':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-else:
-    # MySQL (Beget)
+# Use MySQL only if MYSQL_DATABASE is explicitly set, otherwise SQLite
+if os.getenv('MYSQL_DATABASE'):
+    # MySQL configuration (for Beget or production with MySQL)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': os.getenv('MYSQL_DATABASE', ''),
+            'NAME': os.getenv('MYSQL_DATABASE'),
             'USER': os.getenv('MYSQL_USER', ''),
             'PASSWORD': os.getenv('MYSQL_PASSWORD', ''),
             'HOST': os.getenv('MYSQL_HOST', 'localhost'),
@@ -103,6 +97,14 @@ else:
             'OPTIONS': {
                 'charset': 'utf8mb4',
             },
+        }
+    }
+else:
+    # SQLite (default for local and production without MySQL)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
