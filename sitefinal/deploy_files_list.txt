@@ -1,0 +1,27 @@
+# Файлы для загрузки на Beget хостинг
+
+## Основные файлы Django
+- manage.py
+- requirements_prod.txt
+- setup_beget.py
+
+## Папки Django
+- backend/ (вся папка)
+- donations/ (вся папка)
+- templates/ (вся папка)
+- static/ (вся папка)
+
+## Конфигурационные файлы
+- beget_env_example.txt
+- deploy_beget.sh
+- README_BEGET.md
+
+## НЕ загружать:
+- venv/ (виртуальное окружение)
+- node_modules/ (зависимости Node.js)
+- new-zakaz/ (исходный код React)
+- staticfiles/ (собранные статические файлы)
+- db.sqlite3 (локальная база данных)
+- *.pyc файлы
+- __pycache__ папки
+

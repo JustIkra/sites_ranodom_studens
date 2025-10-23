@@ -1,0 +1,25 @@
+# Переменные окружения для Beget
+# Добавьте эти переменные в панели Beget -> Веб-настройки -> Переменные окружения
+
+# Режим работы
+DJANGO_ENV=production
+DJANGO_DEBUG=0
+
+# Разрешенные хосты (замените на ваш домен)
+DJANGO_ALLOWED_HOSTS=ваш-домен.beget.tech,www.ваш-домен.beget.tech,ваш-домен.ru,www.ваш-домен.ru
+
+# CORS настройки
+DJANGO_CORS_ORIGINS=https://ваш-домен.beget.tech,https://www.ваш-домен.beget.tech,https://ваш-домен.ru,https://www.ваш-домен.ru
+
+# CSRF настройки
+DJANGO_CSRF_TRUSTED_ORIGINS=https://ваш-домен.beget.tech,https://www.ваш-домен.beget.tech,https://ваш-домен.ru,https://www.ваш-домен.ru
+
+# Настройки MySQL (ваши данные)
+MYSQL_DATABASE=iliaydtp_store
+MYSQL_USER=iliaydtp
+MYSQL_PASSWORD=29092006LiPO
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+
+# Секретный ключ (сгенерируйте новый для продакшена!)
+SECRET_KEY=ваш-новый-секретный-ключ-для-продакшена

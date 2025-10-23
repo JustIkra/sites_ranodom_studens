@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>МЫ - Психологическая Помощь</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Open Sans', 'sans-serif'],
+              display: ['Montserrat', 'sans-serif'],
+            },
+            colors: {
+              primary: {
+                DEFAULT: '#2A7650',
+                dark: '#365A36',
+              },
+              secondary: {
+                DEFAULT: '#770050',
+                dark: '#5A003A',
+              },
+              accent: {
+                DEFAULT: '#770050',
+                light: '#9C917B',
+              },
+              highlight: {
+                aqua: '#00DBC5',
+                orange: '#F19736',
+              },
+              'text-dark': '#2F3229',
+              'light-bg': '#F5F5F5',
+            }
+          }
+        }
+      }
+    </script>
+
+<style>
+@keyframes fade-in-scale {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+.animate-fade-in-scale {
+    animation: fade-in-scale 0.3s forwards cubic-bezier(0.16, 1, 0.3, 1);
+}
+</style>
+<link rel="stylesheet" href="/index.css">
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "react/": "https://aistudiocdn.com/react@^19.1.1/"
+  }
+}
+</script>
+    <script type="module" crossorigin src="./assets/index-C8PniQXB.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

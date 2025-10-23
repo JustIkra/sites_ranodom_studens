@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Learning Log</title>
+    <!-- Подключите здесь Bootstrap или ваш CSS -->
+</head>
+<body>
+    <nav>
+        <a href="{% url 'learning_logs:index' %}">Learning Log</a>
+        <!-- Ссылки для авторизованных/неавторизованных пользователей -->
+    </nav>
+    <h1>Приветствую на моём сервере</h1>
+    <main>
+        {% block content %}{% endblock content %}
+    </main>
+</body>
+</html>

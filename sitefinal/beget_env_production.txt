@@ -1,0 +1,26 @@
+# Переменные окружения для Beget - ПРОДАКШЕН
+# Добавьте эти переменные в панели Beget -> Веб-настройки -> Переменные окружения
+
+# Режим работы
+DJANGO_ENV=production
+DJANGO_DEBUG=0
+
+# Разрешенные хосты
+DJANGO_ALLOWED_HOSTS=my-russian-potencial.ru,www.my-russian-potencial.ru
+
+# CORS настройки
+DJANGO_CORS_ORIGINS=https://my-russian-potencial.ru,https://www.my-russian-potencial.ru
+
+# CSRF настройки
+DJANGO_CSRF_TRUSTED_ORIGINS=https://my-russian-potencial.ru,https://www.my-russian-potencial.ru
+
+# Настройки MySQL (ваши данные)
+MYSQL_DATABASE=iliaydtp_store
+MYSQL_USER=iliaydtp
+MYSQL_PASSWORD=29092006LiPO
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+
+# Секретный ключ (сгенерируйте новый для продакшена!)
+SECRET_KEY=ваш-новый-секретный-ключ-для-продакшена
+
