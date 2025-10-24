@@ -30,7 +30,7 @@ DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
 # Allowed hosts configuration
 # In production, set DJANGO_ALLOWED_HOSTS in .env
 # For Nginx Proxy Manager, include both IP and domain
-default_allowed_hosts = ['localhost', '127.0.0.1', '172.30.4.14', 'alexpochikaev.ru', 'www.alexpochikaev.ru']
+default_allowed_hosts = ['localhost', '127.0.0.1', '127.0.0.1:8000', '172.30.4.14', 'alexpochikaev.ru', 'www.alexpochikaev.ru']
 _env_allowed_hosts = os.environ.get('DJANGO_ALLOWED_HOSTS', '')
 ALLOWED_HOSTS = [h.strip() for h in _env_allowed_hosts.split(',') if h.strip()] if _env_allowed_hosts else default_allowed_hosts
 
@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # Serve static files in production
+    'll_project.middleware.RequestLoggingMiddleware',  # Custom request logging
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -178,27 +179,43 @@ if not DEBUG:
     # CSRF_COOKIE_SECURE = True
     pass
 
-# Logging configuration
+# Logging configuration (works in both DEBUG and production)
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
             'style': '{',
         },
         'simple': {
-            'format': '{levelname} {message}',
+            'format': '{levelname} {asctime} {message}',
             'style': '{',
         },
     },
     'handlers': {
-        'file': {
+        'requests_file': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': BASE_DIR / 'logs' / 'requests.log',
-            'maxBytes': 1024 * 1024 * 10,  # 10 MB
-            'backupCount': 5,
+            'maxBytes': 1024 * 1024 * 15,  # 15 MB
+            'backupCount': 10,
+            'formatter': 'verbose',
+        },
+        'errors_file': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs' / 'errors.log',
+            'maxBytes': 1024 * 1024 * 15,  # 15 MB
+            'backupCount': 10,
+            'formatter': 'verbose',
+        },
+        'security_file': {
+            'level': 'WARNING',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs' / 'security.log',
+            'maxBytes': 1024 * 1024 * 15,  # 15 MB
+            'backupCount': 10,
             'formatter': 'verbose',
         },
         'console': {
@@ -209,13 +226,23 @@ LOGGING = {
     },
     'loggers': {
         'django.request': {
-            'handlers': ['file', 'console'],
+            'handlers': ['requests_file', 'errors_file', 'console'],
             'level': 'INFO',
             'propagate': False,
         },
         'django.server': {
-            'handlers': ['file', 'console'],
+            'handlers': ['requests_file', 'console'],
             'level': 'INFO',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['security_file', 'console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'django': {
+            'handlers': ['errors_file', 'console'],
+            'level': 'ERROR',
             'propagate': False,
         },
     },
