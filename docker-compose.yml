@@ -7,15 +7,15 @@ services:
     container_name: visitka
     environment:
       - DJANGO_DEBUG=${DJANGO_DEBUG:-0}
-      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS:-172.30.4.14}
+      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,172.30.4.14,alexpochikaev.ru,www.alexpochikaev.ru
       - DJANGO_SECRET_KEY=${VISITKA_SECRET_KEY:-change-me}
+      - CSRF_TRUSTED_ORIGINS=https://alexpochikaev.ru,https://www.alexpochikaev.ru,http://172.30.4.14
     ports:
       - "8000:8000"
     volumes:
       - visitka_static:/app/staticfiles
       - visitka_db:/app
       - visitka_logs:/app/logs  # Use named volume for logs
-      - ./visitka/ll_project:/app/ll_project  # Mount settings for live updates
     restart: unless-stopped
     networks:
       - app_network
@@ -29,9 +29,9 @@ services:
       - DJANGO_ENV=${DJANGO_ENV:-production}
       - DJANGO_DEBUG=${DJANGO_DEBUG:-0}
       - SECRET_KEY=${FINAL_SECRET_KEY:-change-me}
-      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS:-172.30.4.14}
-      - DJANGO_CORS_ORIGINS=${DJANGO_CORS_ORIGINS:-http://172.30.4.14}
-      - DJANGO_CSRF_TRUSTED_ORIGINS=${DJANGO_CSRF_TRUSTED_ORIGINS:-http://172.30.4.14}
+      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,172.30.4.14,my-russian-potencial.ru,www.my-russian-potencial.ru
+      - DJANGO_CORS_ORIGINS=https://my-russian-potencial.ru,https://www.my-russian-potencial.ru,http://172.30.4.14
+      - DJANGO_CSRF_TRUSTED_ORIGINS=https://my-russian-potencial.ru,https://www.my-russian-potencial.ru,http://172.30.4.14
       # MySQL configuration (uncomment when using MySQL)
       # - MYSQL_DATABASE=${MYSQL_DATABASE}
       # - MYSQL_USER=${MYSQL_USER}
@@ -45,7 +45,6 @@ services:
       - sitefinal_media:/app/media
       - sitefinal_db:/app
       - sitefinal_logs:/app/logs  # Use named volume for logs
-      - ./sitefinal/backend:/app/backend  # Mount settings for live updates
     restart: unless-stopped
     networks:
       - app_network
