@@ -179,6 +179,10 @@ if not DEBUG:
     # CSRF_COOKIE_SECURE = True
     pass
 
+# Create logs directory if it doesn't exist
+LOGS_DIR = BASE_DIR / 'logs'
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+
 # Logging configuration (works in both DEBUG and production)
 LOGGING = {
     'version': 1,
@@ -197,7 +201,7 @@ LOGGING = {
         'requests_file': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': BASE_DIR / 'logs' / 'requests.log',
+            'filename': LOGS_DIR / 'requests.log',
             'maxBytes': 1024 * 1024 * 15,  # 15 MB
             'backupCount': 10,
             'formatter': 'verbose',
@@ -205,7 +209,7 @@ LOGGING = {
         'errors_file': {
             'level': 'ERROR',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': BASE_DIR / 'logs' / 'errors.log',
+            'filename': LOGS_DIR / 'errors.log',
             'maxBytes': 1024 * 1024 * 15,  # 15 MB
             'backupCount': 10,
             'formatter': 'verbose',
@@ -213,7 +217,7 @@ LOGGING = {
         'security_file': {
             'level': 'WARNING',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': BASE_DIR / 'logs' / 'security.log',
+            'filename': LOGS_DIR / 'security.log',
             'maxBytes': 1024 * 1024 * 15,  # 15 MB
             'backupCount': 10,
             'formatter': 'verbose',
