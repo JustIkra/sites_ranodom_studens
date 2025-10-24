@@ -4,8 +4,8 @@ set -e
 APP_USER=${APP_USER:-appuser}
 
 if [ "$(id -u)" = "0" ]; then
-  mkdir -p /app/staticfiles
-  chown -R "$APP_USER":"$APP_USER" /app/staticfiles 2>/dev/null || true
+  mkdir -p /app/staticfiles /app/logs
+  chown -R "$APP_USER":"$APP_USER" /app/staticfiles /app/logs 2>/dev/null || true
   exec gosu "$APP_USER" "$0" "$@"
 fi
 

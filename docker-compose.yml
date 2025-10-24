@@ -14,8 +14,8 @@ services:
     volumes:
       - visitka_static:/app/staticfiles
       - visitka_db:/app
+      - visitka_logs:/app/logs  # Use named volume for logs
       - ./visitka/ll_project:/app/ll_project  # Mount settings for live updates
-      - ./visitka/logs:/app/logs  # Mount logs to host
     restart: unless-stopped
     networks:
       - app_network
@@ -44,8 +44,8 @@ services:
       - sitefinal_static:/app/staticfiles
       - sitefinal_media:/app/media
       - sitefinal_db:/app
+      - sitefinal_logs:/app/logs  # Use named volume for logs
       - ./sitefinal/backend:/app/backend  # Mount settings for live updates
-      - ./sitefinal/logs:/app/logs  # Mount logs to host
     restart: unless-stopped
     networks:
       - app_network
@@ -53,9 +53,11 @@ services:
 volumes:
   visitka_static:
   visitka_db:
+  visitka_logs:
   sitefinal_static:
   sitefinal_media:
   sitefinal_db:
+  sitefinal_logs:
 
 networks:
   app_network:
