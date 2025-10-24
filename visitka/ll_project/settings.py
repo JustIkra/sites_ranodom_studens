@@ -30,7 +30,7 @@ DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
 # Allowed hosts configuration
 # In production, set DJANGO_ALLOWED_HOSTS in .env
 # For Nginx Proxy Manager, include both IP and domain
-default_allowed_hosts = ['localhost', '127.0.0.1', '172.30.4.14']
+default_allowed_hosts = ['localhost', '127.0.0.1', '172.30.4.14', 'alexpochikaev.ru', 'www.alexpochikaev.ru']
 _env_allowed_hosts = os.environ.get('DJANGO_ALLOWED_HOSTS', '')
 ALLOWED_HOSTS = [h.strip() for h in _env_allowed_hosts.split(',') if h.strip()] if _env_allowed_hosts else default_allowed_hosts
 
@@ -159,7 +159,14 @@ CACHES = {
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # CSRF trusted origins for Nginx Proxy Manager
-default_csrf = ['http://172.30.4.14', 'http://172.30.4.14:8000']
+default_csrf = [
+    'http://172.30.4.14',
+    'http://172.30.4.14:8000',
+    'https://alexpochikaev.ru',
+    'https://www.alexpochikaev.ru',
+    'http://alexpochikaev.ru',
+    'http://www.alexpochikaev.ru',
+]
 _env_csrf = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
 CSRF_TRUSTED_ORIGINS = [h.strip() for h in _env_csrf.split(',') if h.strip()] if _env_csrf else default_csrf
 
@@ -170,3 +177,46 @@ if not DEBUG:
     # SESSION_COOKIE_SECURE = True
     # CSRF_COOKIE_SECURE = True
     pass
+
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs' / 'requests.log',
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.server': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}

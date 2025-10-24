@@ -30,6 +30,8 @@ default_allowed_hosts = [
     'localhost',
     '127.0.0.1',
     '172.30.4.14',  # ZeroTier IP
+    'my-russian-potencial.ru',
+    'www.my-russian-potencial.ru',
 ]
 env_allowed_hosts = [h.strip() for h in os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',') if h.strip()]
 ALLOWED_HOSTS = env_allowed_hosts if env_allowed_hosts else default_allowed_hosts
@@ -158,6 +160,10 @@ default_cors = [
     "http://127.0.0.1:3000",
     "http://172.30.4.14",
     "http://172.30.4.14:8001",
+    "https://my-russian-potencial.ru",
+    "https://www.my-russian-potencial.ru",
+    "http://my-russian-potencial.ru",
+    "http://www.my-russian-potencial.ru",
 ]
 if DJANGO_ENV == 'local':
     CORS_ALLOW_ALL_ORIGINS = True
@@ -182,6 +188,10 @@ default_csrf = [
     'http://127.0.0.1',
     'http://172.30.4.14',
     'http://172.30.4.14:8001',
+    'https://my-russian-potencial.ru',
+    'https://www.my-russian-potencial.ru',
+    'http://my-russian-potencial.ru',
+    'http://www.my-russian-potencial.ru',
 ]
 env_csrf = [h.strip() for h in os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',') if h.strip()]
 CSRF_TRUSTED_ORIGINS = env_csrf if env_csrf else default_csrf
@@ -198,3 +208,46 @@ if DJANGO_ENV != 'local':
     pass
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs' / 'requests.log',
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'django.server': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
